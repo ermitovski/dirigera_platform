@@ -20,11 +20,12 @@ from homeassistant.const import (
     UnitOfPower,
     UnitOfTemperature,
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+    CONCENTRATION_PARTS_PER_MILLION,
     )
 
 from dirigera import Hub
 from dirigera.devices.blinds import Blind
-from dirigera.devices.environment_sensor import EnvironmentSensor
+from .dirigera_lib_patch import EnvironmentSensorX
 from dirigera.devices.controller import Controller
 from dirigera.devices.air_purifier import FanModeEnum
 
@@ -356,7 +357,7 @@ class ikea_blinds_sensor(ikea_base_device_sensor, CoverEntity):
         await self._device.async_set_cover_position(position)
 
 class ikea_vindstyrka_device(ikea_base_device):
-    def __init__(self, hass:core.HomeAssistant, hub:Hub , json_data:EnvironmentSensor) -> None:
+    def __init__(self, hass:core.HomeAssistant, hub:Hub , json_data:EnvironmentSensorX) -> None:
         super().__init__(hass, hub, json_data, hub.get_environment_sensor_by_id)
         self._updated_at = None 
 
@@ -453,6 +454,23 @@ class ikea_vindstyrka_voc_index(ikea_base_device_sensor, SensorEntity):
     @property
     def native_value(self) -> int:
         return self._device.voc_index
+
+
+class ikea_alpstuga_co2(ikea_base_device_sensor, SensorEntity):
+    """CO2 sensor for IKEA ALPSTUGA air quality monitor."""
+    def __init__(self, device: ikea_vindstyrka_device) -> None:
+        logger.debug("ikea_alpstuga_co2 ctor...")
+        super().__init__(
+            device,
+            id_suffix="CO2",
+            name="CO2",
+            device_class=SensorDeviceClass.CO2,
+            native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION)
+
+    @property
+    def native_value(self) -> int:
+        return self._device.current_c_o2
+
 
 # SOMRIG Controllers act differently in the gateway Hub
 # While its one device but two id's are sent back each
