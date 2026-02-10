@@ -199,11 +199,11 @@ class DeviceDiscoveryCoordinator:
             from dirigera.devices.blinds import dict_to_blind
             from dirigera.devices.open_close_sensor import dict_to_open_close_sensor
             from dirigera.devices.water_sensor import dict_to_water_sensor
+            from dirigera.devices.environment_sensor import dict_to_environment_sensor
+            from dirigera.devices.light_sensor import dict_to_light_sensor
             from .dirigera_lib_patch import (
-                dict_to_environment_sensor_x,
                 dict_to_controller,
                 dict_to_motion_sensor_x,
-                dict_to_light_sensor_x,
             )
 
             if device_type == "light":
@@ -249,7 +249,7 @@ class DeviceDiscoveryCoordinator:
 
             elif device_type == "lightSensor":
                 # Light sensor (MYGGSPRAY illuminance): wrapper -> HA entity
-                sensor = dict_to_light_sensor_x(device_data, self._hub)
+                sensor = dict_to_light_sensor(device_data, self._hub)
                 device_wrapper = ikea_light_sensor_device(self._hass, self._hub, sensor)
                 return ikea_light_sensor_lux(device_wrapper)
 

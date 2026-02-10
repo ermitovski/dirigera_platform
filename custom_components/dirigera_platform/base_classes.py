@@ -27,7 +27,8 @@ from homeassistant.const import (
 
 from dirigera import Hub
 from dirigera.devices.blinds import Blind
-from .dirigera_lib_patch import EnvironmentSensorX, LightSensorX
+from dirigera.devices.environment_sensor import EnvironmentSensor
+from dirigera.devices.light_sensor import LightSensor
 from dirigera.devices.controller import Controller
 from dirigera.devices.air_purifier import FanModeEnum
 
@@ -251,7 +252,7 @@ class ikea_motion_sensor(ikea_base_device_sensor, BinarySensorEntity):
         return self._device.is_on or self._device.is_detected
 
 class ikea_light_sensor_device(ikea_base_device):
-    def __init__(self, hass, hub, json_data: LightSensorX):
+    def __init__(self, hass, hub, json_data: LightSensor):
         logger.debug("ikea_light_sensor_device ctor...")
         super().__init__(hass, hub, json_data, hub.get_light_sensor_by_id)
         self.skip_update = True
@@ -391,7 +392,7 @@ class ikea_blinds_sensor(ikea_base_device_sensor, CoverEntity):
         await self._device.async_set_cover_position(position)
 
 class ikea_vindstyrka_device(ikea_base_device):
-    def __init__(self, hass:core.HomeAssistant, hub:Hub , json_data:EnvironmentSensorX) -> None:
+    def __init__(self, hass:core.HomeAssistant, hub:Hub , json_data:EnvironmentSensor) -> None:
         super().__init__(hass, hub, json_data, hub.get_environment_sensor_by_id)
         self._updated_at = None 
 
