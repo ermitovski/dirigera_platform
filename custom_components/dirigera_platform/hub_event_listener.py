@@ -652,7 +652,7 @@ class hub_event_listener(threading.Thread):
                 self._hub.websocket_base_url,
                 header={"Authorization": f"Bearer {self._hub.token}"},
                 on_message=self.on_message)
-            self._wsapp.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+            self._wsapp.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, ping_interval=30, ping_timeout=10)
             #self._hub.create_event_listener(on_message=self.on_message, on_error=self.on_error)
         except Exception as ex:
             logger.error("Error creating event listener...")
